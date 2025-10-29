@@ -1,0 +1,71 @@
+<div class="container-fluid min-vh-100 py-5 bg-gradient bg-primary-subtle text-dark">
+  <!-- Top-right Edit Profile button -->
+  <div class="d-flex justify-content-end px-4 mb-2">
+    <a routerLink="/staff/profile" class="btn btn-outline-primary btn-sm">Edit Profile</a>
+
+  </div>
+
+  <!-- Dashboard Header -->
+  <div class="text-center mb-4">
+    <h3 class="fw-bold text-dark">👩‍⚕️ Staff Dashboard</h3>
+    <p class="text-dark">Welcome, {{ staffName }}! Here’s your upcoming shift schedule.</p>
+  </div>
+
+  <!-- Shift Table -->
+  <div class="bg-white p-4">
+    <table class="table align-middle text-center text-dark">
+      <thead class="table-white">
+        <tr>
+          <th>Day</th>
+          <th>Role</th>
+          <th>Shift Type</th>
+        </tr>
+      </thead>
+      <tbody>
+  <tr *ngFor="let shift of shifts">
+    <td>{{ shift.day }}</td>
+    <td>{{ shift.role }}</td>
+    <td>
+      <span 
+        class="badge px-3 py-2 text-white"
+        [class.bg-success]="shift.shiftType === 'Day Shift'"
+        [class.bg-dark]="shift.shiftType === 'Night Shift'">
+        {{ shift.shiftType }}
+      </span>
+    </td>
+  </tr>
+</tbody>
+
+    </table>
+  </div>
+</div>
+
+
+  <div class="bg-white p-4">
+  <table class="table align-middle text-center text-dark">
+    <thead class="table-white">
+      <tr>
+        <th>Day</th>
+        <th>Role</th>
+        <th>Shift Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (shift of shifts; track shift) {
+        <tr>
+          <td>{{ shift.day }}</td>
+          <td>{{ shift.role }}</td>
+          <td>
+            <span 
+              class="badge px-3 py-2 text-white"
+              [class.bg-success]="shift.shiftType === 'Day Shift'"
+              [class.bg-dark]="shift.shiftType === 'Night Shift'">
+              {{ shift.shiftType }}
+            </span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+

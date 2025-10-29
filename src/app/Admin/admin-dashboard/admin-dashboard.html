@@ -1,0 +1,42 @@
+<div class="container-fluid min-vh-100 d-flex flex-column py-4 bg-gradient bg-primary-subtle">
+
+  <h3 class="text-dark mb-5 text-center fs-2">Admin Dashboard</h3>
+
+  <div class="row g-5 justify-content-center">
+    <div class="col-lg-5 col-md-6">
+      <div class="card border-0 shadow-lg h-100 bg-white rounded-4 p-4">
+        <div class="card-body d-flex flex-column justify-content-between gap-4">
+          <div>
+            <h4 class="text-dark fw-bold">
+              👥 Staff Management
+              <span class="badge bg-light text-dark ms-2">Admin</span>
+            </h4>
+            <p class="text-dark fs-6">Add, edit, or remove staff members and manage their details.</p>
+          </div>
+          <a routerLink="/admin/staff-management" class="btn btn-outline-dark fw-semibold rounded-pill px-4 py-2">
+            Manage Staff
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5 col-md-6">
+      <div class="card border-0 shadow-lg h-100 bg-white rounded-4 p-4">
+        <div class="card-body d-flex flex-column justify-content-between gap-4">
+          <div>
+            <h4 class="text-dark fw-bold">
+              📅 Timetable
+              <span class="badge bg-light text-dark ms-2">Schedule</span>
+            </h4>
+            <p class="text-dark fs-6">Assign shifts and view department schedules with ease.</p>
+          </div>
+          <a routerLink="/admin/timetable" class="btn btn-outline-dark fw-semibold rounded-pill px-4 py-2">
+            View Timetable
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>
