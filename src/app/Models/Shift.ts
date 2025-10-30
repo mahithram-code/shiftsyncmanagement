@@ -3,5 +3,6 @@ export interface shift{
     staffId:number;
     staffName?:string;
     department:string;
+    shiftDate: string;
     shiftType:string;
 }
