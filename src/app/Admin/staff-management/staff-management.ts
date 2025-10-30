@@ -2,7 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-
+@Component({
+  selector: 'app-staff-management',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './staff-management.html'
+})
 export class StaffManagementComponent {
   staffForm: FormGroup;
   staffs: { id: number; name: string; email: string; department: string }[] = [];

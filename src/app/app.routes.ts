@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './Heropage/homepage/homepage';
-import { LoginComponent } from './Heropage/login/login';
+import { LoginComponent } from './login/login';
 import { AdminDashboardComponent } from './Admin/admin-dashboard/admin-dashboard';
 import { StaffManagementComponent } from './Admin/staff-management/staff-management';
 import { TimetableComponent } from './Admin/time-table/time-table';

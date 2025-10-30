@@ -22,20 +22,21 @@
         </tr>
       </thead>
       <tbody>
-  <tr *ngFor="let shift of shifts">
-    <td>{{ shift.day }}</td>
-    <td>{{ shift.role }}</td>
-    <td>
-      <span 
-        class="badge px-3 py-2 text-white"
-        [class.bg-success]="shift.shiftType === 'Day Shift'"
-        [class.bg-dark]="shift.shiftType === 'Night Shift'">
-        {{ shift.shiftType }}
-      </span>
-    </td>
-  </tr>
-</tbody>
-
+        @for (shift of shifts; track shift) {
+          <tr>
+            <td>{{ shift.day }}</td>
+            <td>{{ shift.role }}</td>
+            <td>
+              <span 
+                class="badge px-3 py-2 text-white"
+                [class.bg-success]="shift.shiftType === 'Day Shift'"
+                [class.bg-dark]="shift.shiftType === 'Night Shift'">
+                {{ shift.shiftType }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
     </table>
   </div>
 </div>
