@@ -1,8 +1,13 @@
-<div class="container-fluid min-vh-100 d-flex flex-column py-4 bg-gradient bg-primary-subtle">
+<div id="timetable-page" class="container-fluid min-vh-100 d-flex flex-column py-4">
   <h4 class="text-dark fw-bold mb-4 text-center">Timetable</h4>
 
   <!-- Shift Assignment Form -->
-  <div class="card my-3 shadow-sm border-0">
+   <div id="staff-form-card" class="card my-4 shadow-sm border-0">
+  <div class="card-header bg-white border-bottom">
+    <h5 class="mb-0 text-dark fw-semibold text-center">Add Shift</h5>
+  </div>
+
+  <!-- <div class="card my-3 shadow-sm border-0"> -->
     <div class="card-body">
       <form [formGroup]="shiftForm" (ngSubmit)="assignShift()">
         <div class="row g-3 align-items-end">
@@ -32,6 +37,8 @@
   </div>
 
   <!-- Filter Dropdown -->
+   
+  
   <div class="mb-3">
     <label class="form-label small text-dark">Filter by Department</label>
     <select class="form-select form-select-sm w-25" [(ngModel)]="filterDepartment" (change)="applyFilter()">
