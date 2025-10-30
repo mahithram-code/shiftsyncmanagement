@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
+import { AuthService } from '../core/AuthService';
 
 // Define the component metadata
 @Component({
@@ -16,7 +17,7 @@ export class LoginComponent {
   loginForm: FormGroup;
 
   // Inject FormBuilder and Router services
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router,private authSvc: AuthService) {
     // Initialize the form with controls and validators
     this.loginForm = this.fb.group({
       username: ['', Validators.required], // Username field with required validation
@@ -26,20 +27,37 @@ export class LoginComponent {
   }
 
   // Handle form submission
-  onSubmit() {
-    // Extract username and password from the form
-    const { username, password } = this.loginForm.value;
+  // onSubmit() {
+  //   const { username, password } = this.loginForm.value;
 
-    // Check credentials and navigate accordingly
-    if (username === 'admin@example.com' && password === 'admin123') {
-      // Navigate to admin dashboard if admin credentials match
-      this.router.navigate(['/admin/dashboard']);
-    } else if (username === 'staff@example.com' && password === 'staff123') {
-      // Navigate to staff dashboard if staff credentials match
-      this.router.navigate(['/staff/staff-dashboard']);
-    } else {
-      // Show an alert if credentials are invalid
-      alert('Invalid credentials');
+  //   this.authSvc.login({ username, password }).subscribe({
+  //     next: (res) => {
+  //       localStorage.setItem('authToken', res.token); // Save token
+
+  //       this.router.navigate(['admin/dashboard']);
+
+  //     },
+  //     error: () => {
+  //       alert('Invalid username or password');
+  //     }
+  //   });
+
+  onSubmit() {
+  const { username, password } = this.loginForm.value;
+
+  this.authSvc.login({ username, password }).subscribe({
+    next: (res) => {
+      localStorage.setItem('authToken', res.token); // Save token
+      localStorage.setItem('userRole', res.role);   // Optional: save role for guards or layout
+
+      // Route based on role
+      const route = res.role === 'admin' ? 'admin/dashboard' : 'staff/staff-dashboard';
+      this.router.navigate([route]);
+    },
+    error: () => {
+      alert('Invalid username or password');
     }
-  }
+  });
+}
+
 }

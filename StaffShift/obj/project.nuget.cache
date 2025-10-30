@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ky3bYAiE0x4=",
+  "dgSpecHash": "719kKstET7U=",
   "success": true,
-  "projectFilePath": "C:\\demos\\final capstone project\\staffshift\\StaffShift\\StaffShift.csproj",
+  "projectFilePath": "C:\\demos\\final capstone project\\frontend\\staffshift\\StaffShift\\StaffShift.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mahithra.m\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\mahithra.m\\.nuget\\packages\\microsoft.openapi\\1.6.14\\microsoft.openapi.1.6.14.nupkg.sha512",

@@ -453,11 +453,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\demos\\final capstone project\\StaffShift\\StaffShift\\StaffShift.csproj",
+      "projectUniqueName": "C:\\demos\\final capstone project\\frontend\\staffshift\\StaffShift\\StaffShift.csproj",
       "projectName": "StaffShift",
-      "projectPath": "C:\\demos\\final capstone project\\StaffShift\\StaffShift\\StaffShift.csproj",
+      "projectPath": "C:\\demos\\final capstone project\\frontend\\staffshift\\StaffShift\\StaffShift.csproj",
       "packagesPath": "C:\\Users\\mahithra.m\\.nuget\\packages\\",
-      "outputPath": "C:\\demos\\final capstone project\\StaffShift\\StaffShift\\obj\\",
+      "outputPath": "C:\\demos\\final capstone project\\frontend\\staffshift\\StaffShift\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
