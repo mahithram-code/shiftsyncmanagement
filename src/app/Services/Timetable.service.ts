@@ -5,7 +5,8 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TimetableService {
-  private api = '/api/timetable';
+  // FIX: Use the absolute URL
+  private api = 'https://localhost:7216/api/timetable';
 
   constructor(private http: HttpClient) {}
 

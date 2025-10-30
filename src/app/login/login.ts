@@ -1,9 +1,8 @@
-// Import necessary Angular core and form modules
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
-import { AuthService } from '../core/AuthService';
+import { Component } from '@angular/core'; // FIX: Add Component
+import { CommonModule } from '@angular/common'; // FIX: Add CommonModule
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; // FIX: Add Reactive Forms classes
+import { RouterModule, Router } from '@angular/router'; // FIX: Add RouterModule and Router
+import { AuthService } from '../ApiService/AuthService'; // FIX: Add AuthService
 
 // Define the component metadata
 @Component({
@@ -14,50 +13,41 @@ import { AuthService } from '../core/AuthService';
 })
 export class LoginComponent {
   // Define the login form group
-  loginForm: FormGroup;
+  loginForm: FormGroup; // FIX: FormGroup is now recognized
 
   // Inject FormBuilder and Router services
-  constructor(private fb: FormBuilder, private router: Router,private authSvc: AuthService) {
+  constructor(private fb: FormBuilder, private router: Router, private authSvc: AuthService) { // FIX: FormBuilder, Router, AuthService are now recognized
     // Initialize the form with controls and validators
     this.loginForm = this.fb.group({
-      username: ['', Validators.required], // Username field with required validation
-      password: ['', Validators.required], // Password field with required validation
+      username: ['', Validators.required], // FIX: Validators is now recognized
+      password: ['', Validators.required], // FIX: Validators is now recognized
       rememberMe: [false] // Optional checkbox for "Remember me"
     });
   }
 
   // Handle form submission
-  // onSubmit() {
-  //   const { username, password } = this.loginForm.value;
-
-  //   this.authSvc.login({ username, password }).subscribe({
-  //     next: (res) => {
-  //       localStorage.setItem('authToken', res.token); // Save token
-
-  //       this.router.navigate(['admin/dashboard']);
-
-  //     },
-  //     error: () => {
-  //       alert('Invalid username or password');
-  //     }
-  //   });
-
+ 
   onSubmit() {
-  const { username, password } = this.loginForm.value;
+    const { username, password } = this.loginForm.value;
 
-  this.authSvc.login({ username, password }).subscribe({
-    next: (res) => {
-      localStorage.setItem('authToken', res.token); // Save token
-      localStorage.setItem('userRole', res.role);   // Optional: save role for guards or layout
+    this.authSvc.login({ username, password }).subscribe({
+      next: (res: any) => { 
+        localStorage.setItem('authToken', res.token);
+        
+        // FIX: Read the 'securityRole' property from the backend response (which is sent as SecurityRole)
+        const rawRole = res.securityRole || ''; // <--- Changed from res.role to res.securityRole
+        const normalizedRole = rawRole.toLowerCase();
+        
+        localStorage.setItem('userRole', normalizedRole);
 
-      // Route based on role
-      const route = res.role === 'admin' ? 'admin/dashboard' : 'staff/staff-dashboard';
-      this.router.navigate([route]);
-    },
-    error: () => {
-      alert('Invalid username or password');
-    }
-  });
-}
+        // Route based on role
+        const route = normalizedRole === 'admin' ? 'admin/dashboard' : 'staff/staff-dashboard';
+        this.router.navigate([route]);
+      },
+      error: () => {
+        alert('Invalid username or password');
+      }
+    });
+  }
 
 }

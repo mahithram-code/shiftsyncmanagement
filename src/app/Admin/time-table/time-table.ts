@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms'; 
-import { StaffService } from '../../Services/staff-service';
+// FIX: Import the correct StaffService and Staff model from ApiService
+import { StaffService, Staff } from '../../ApiService/StaffService';
+// FIX: Corrected import path for TimetableService
 import { TimetableService } from '../../Services/Timetable.service';
-import { staff } from '../../Models/Staff';
+// FIX: Removed the old, incorrect staff model
+// import { staff } from '../../Models/Staff'; 
 import { shift } from '../../Models/Shift';
 
 @Component({
@@ -15,7 +18,8 @@ import { shift } from '../../Models/Shift';
 export class TimetableComponent implements OnInit {
   shiftForm!: FormGroup; 
 
-  staffs: staff[] = [];
+  // FIX: Use the correct Staff interface (imported from ApiService)
+  staffs: Staff[] = []; 
   shifts: shift[] = [];
   shiftsFiltered: shift[] = [];
   departments = ['Emergency', 'ICU', 'General', 'OPD'];
@@ -23,14 +27,14 @@ export class TimetableComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private staffSvc: StaffService,
+    private staffSvc: StaffService, // This is now the correct StaffService
     private ttSvc: TimetableService
   ) {
     this.shiftForm = this.fb.group({
       staffId: ['', Validators.required],
       department: [{ value: '', disabled: true }],
       shiftType: ['Day', Validators.required],
-      shiftDate: ['', Validators.required]  // ✅ Added date field
+      shiftDate: ['', Validators.required]
     });
   }
 
@@ -46,11 +50,13 @@ export class TimetableComponent implements OnInit {
   }
 
   loadStaffs() {
-    this.staffSvc.getAll().subscribe(s => this.staffs = s);
+    // FIX: Add explicit type (Staff[]) to 's' to resolve TS7006
+    this.staffSvc.getAll().subscribe((s: Staff[]) => this.staffs = s);
   }
 
   loadShifts() {
-    this.ttSvc.getAll().subscribe(s => {
+    // FIX: Add explicit type (shift[]) to 's' to resolve TS7006
+    this.ttSvc.getAll().subscribe((s: shift[]) => {
       this.shifts = s;
       this.applyFilter();
     });
@@ -68,7 +74,7 @@ export class TimetableComponent implements OnInit {
       staffId: Number(raw.staffId),
       department: raw.department,
       shiftType: raw.shiftType,
-      shiftDate: raw.shiftDate  // ✅ Include date in payload
+      shiftDate: raw.shiftDate
     };
 
     this.ttSvc.create(payload).subscribe({
@@ -76,7 +82,8 @@ export class TimetableComponent implements OnInit {
         this.loadShifts();
         this.shiftForm.patchValue({ shiftType: 'Day', shiftDate: '' });
       },
-      error: (err) => alert(err?.error?.message ?? 'Shift assignment failed')
+      // FIX: Add explicit type 'any' to 'err' to resolve TS7006
+      error: (err: any) => alert(err?.error?.message ?? 'Shift assignment failed')
     });
   }
 
