@@ -2,19 +2,19 @@
   <h4 class="text-dark fw-bold mb-4 text-center">Timetable</h4>
 
   <!-- Shift Assignment Form -->
-   <div id="staff-form-card" class="card my-4 shadow-sm border-0">
-  <div class="card-header bg-white border-bottom">
-    <h5 class="mb-0 text-dark fw-semibold text-center">Add Shift</h5>
-  </div>
-
-  <!-- <div class="card my-3 shadow-sm border-0"> -->
+  <div id="staff-form-card" class="card my-4 shadow-sm border-0">
+    <div class="card-header bg-white border-bottom">
+      <h5 class="mb-0 text-dark fw-semibold text-center">Add Shift</h5>
+    </div>
     <div class="card-body">
       <form [formGroup]="shiftForm" (ngSubmit)="assignShift()">
         <div class="row g-3 align-items-end">
           <div class="col-md-4">
             <label class="small text-dark">Staff</label>
             <select class="form-select form-select-sm" formControlName="staffId">
-              <option *ngFor="let s of staffs" [value]="s.id">{{ s.name }} — {{ s.department }}</option>
+              @for (s of staffs; track s.id) {
+                <option [value]="s.id">{{ s.name }} — {{ s.department }}</option>
+              }
             </select>
           </div>
 
@@ -37,13 +37,13 @@
   </div>
 
   <!-- Filter Dropdown -->
-   
-  
   <div class="mb-3">
     <label class="form-label small text-dark">Filter by Department</label>
     <select class="form-select form-select-sm w-25" [(ngModel)]="filterDepartment" (change)="applyFilter()">
       <option value="">All</option>
-      <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+      @for (d of departments; track d) {
+        <option [value]="d">{{ d }}</option>
+      }
     </select>
   </div>
 
@@ -62,18 +62,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let sh of shiftsFiltered">
-              <td>{{ sh.staffName }}</td>
-              <td>{{ sh.department }}</td>
-              <td>{{ sh.shiftType }}</td>
-              <td>
-                <button class="btn btn-sm btn-outline-secondary me-1" (click)="editShift(sh)">Edit</button>
-                <button class="btn btn-sm btn-outline-danger" (click)="deleteShift(sh.id)">Delete</button>
-              </td>
-            </tr>
-            <tr *ngIf="shiftsFiltered.length === 0">
-              <td colspan="4" class="text-center text-muted">No shifts assigned yet</td>
-            </tr>
+            @if (shiftsFiltered.length > 0) {
+              @for (sh of shiftsFiltered; track sh.id) {
+                <tr>
+                  <td>{{ sh.staffName }}</td>
+                  <td>{{ sh.department }}</td>
+                  <td>{{ sh.shiftType }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-secondary me-1" (click)="editShift(sh)">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteShift(sh.id)">Delete</button>
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="4" class="text-center text-muted">No shifts assigned yet</td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>
