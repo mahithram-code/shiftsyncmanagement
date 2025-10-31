@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class TimetableService {
   // FIX: Use the absolute URL
-  private api = 'https://localhost:7216/api/timetable';
+  private api = 'https://localhost:7216/api/Staff';
 
   constructor(private http: HttpClient) {}
 
@@ -29,4 +29,9 @@ export class TimetableService {
   getMine(): Observable<shift[]> {
     return this.http.get<shift[]>(`${this.api}/me`);
   }
+
+  getMyShifts(): Observable<shift[]> {
+  return this.http.get<shift[]>('/api/shifts/my');
+}
+
 }

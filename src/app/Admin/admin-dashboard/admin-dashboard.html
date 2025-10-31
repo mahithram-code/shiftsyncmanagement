@@ -1,10 +1,18 @@
-<div class="container-fluid min-vh-100 d-flex flex-column py-4 bg-gradient bg-primary-subtle">
+<div class="container-fluid min-vh-100 d-flex flex-column py-4 px-4 bg-gradient bg-primary-subtle position-relative">
 
-  <h3 class="text-dark mb-5 text-center fs-2">Admin Dashboard</h3>
+  <!-- 🔒 Logout Button -->
+  <div class="position-absolute top-0 end-0 m-4">
+    <button class="btn btn-danger btn-sm px-3 py-2 fw-semibold shadow" (click)="logout()">
+      <i class="bi bi-box-arrow-right me-1"></i> Logout
+    </button>
+  </div>
+
+  <!-- 🧭 Dashboard Title -->
+  <h3 class="text-dark mb-5 text-center fs-2 fw-bold text-uppercase">Admin Dashboard</h3>
 
   <div class="row g-5 justify-content-center">
-    <div class="col-lg-5 col-md-6">
-      <div class="card border-0 shadow-lg h-100 bg-white rounded-4 p-4">
+    <div class="col-lg-6 col-md-8">
+      <div class="card border-0 shadow-lg h-100 bg-white rounded-4 p-4 hover-shadow">
         <div class="card-body d-flex flex-column justify-content-between gap-4">
           <div>
             <h4 class="text-dark fw-bold">
@@ -20,8 +28,8 @@
       </div>
     </div>
 
-    <div class="col-lg-5 col-md-6">
-      <div class="card border-0 shadow-lg h-100 bg-white rounded-4 p-4">
+    <div class="col-lg-6 col-md-8">
+      <div class="card border-0 shadow-lg h-100 bg-white rounded-4 p-4 hover-shadow">
         <div class="card-body d-flex flex-column justify-content-between gap-4">
           <div>
             <h4 class="text-dark fw-bold">

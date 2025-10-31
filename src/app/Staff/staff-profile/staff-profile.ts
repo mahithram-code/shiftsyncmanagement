@@ -1,29 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProfileService } from '../../ApiService/ProfileService';
+import { staff } from '../../Models/Staff';
+import { Profile } from '../../Models/Profile';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './staff-profile.html'
 })
-export class StaffProfileComponent {
+export class StaffProfileComponent implements OnInit {
   profileForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private profileSvc: ProfileService) {
     this.profileForm = this.fb.group({
-      name: ['Dr. Priya', Validators.required],
-      email: ['priya@example.com', [Validators.required, Validators.email]],
-      department: ['General', Validators.required],
-      phone: ['', Validators.pattern(/^[0-9]{10}$/)]
+      name: ['', Validators.required],
+      username: ['', [Validators.required, Validators.email]],
+      jobRole: ['', Validators.required]
+    });
+  }
+
+  ngOnInit() {
+    this.profileSvc.getProfile().subscribe({
+      next: (data: staff) => {
+        this.profileForm.patchValue({
+          name: data.name,
+          username: data.username
+        });
+      },
+      error: (err) => {
+        console.error('Failed to load profile:', err);
+      }
     });
   }
 
   updateProfile() {
     if (this.profileForm.valid) {
-      console.log('Updated profile:', this.profileForm.value);
-      alert('Profile updated successfully!');
+      const request: Profile = this.profileForm.value;
+      this.profileSvc.updateProfile(request).subscribe({
+        next: () => alert('Profile updated successfully!'),
+        error: (err) => alert(err?.error ?? 'Failed to update profile.')
+      });
     }
   }
 }

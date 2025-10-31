@@ -1,59 +1,67 @@
-<div id="timetable-page" class="container-fluid min-vh-100 d-flex flex-column py-4">
-  <h4 class="text-dark fw-bold mb-4 text-center">Timetable</h4>
+<div id="timetable-page" class="container-fluid min-vh-100 d-flex flex-column py-4 px-4 bg-light gap-3">
 
-  <!-- Shift Assignment Form -->
-  <div id="staff-form-card" class="card my-4 shadow-sm border-0">
+  <!-- 🔙 Back to Dashboard + Title Row -->
+  <div class="row align-items-center mb-3">
+    <div class="col-auto">
+      <a routerLink="/admin/dashboard" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold text-uppercase shadow-sm">
+        &larr; Back to Dashboard
+      </a>
+    </div>
+    <div class="col text-end">
+      <div class="d-flex justify-content-center mb-2">
+        <h4 class="text-dark fw-bold mb-0 text-uppercase text-decoration-underline">
+          Timetable
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🧾 Shift Assignment Form -->
+  <div id="staff-form-card" class="card my-4 shadow-lg border border-primary-subtle border-opacity-25 rounded-3">
     <div class="card-header bg-white border-bottom">
-      
-      <h5 class="mb-0 text-dark fw-semibold text-center">Add Shift</h5>
+      <h5 class="mb-0 text-dark fw-semibold text-center text-decoration-underline">Add Shift</h5>
     </div>
     <div class="card-body">
       <form [formGroup]="shiftForm" (ngSubmit)="assignShift()">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-3">
-            <label class="small text-dark">Staff</label>
-            <select class="form-select form-select-sm" formControlName="staffId">
+        <div class="row g-4 gy-3">
+          <div class="col-md-6 col-lg-3">
+            <label class="form-label small text-muted text-capitalize">Staff</label>
+            <select class="form-select form-select-sm rounded-2 border-primary-subtle shadow-sm" formControlName="staffId">
               @for (s of staffs; track s.id) {
                 <option [value]="s.id">{{ s.name }} — {{ s.department }}</option>
               }
             </select>
           </div>
 
-          <div class="col-md-3">
-            <label class="small text-dark">Department</label>
-            <input class="form-control form-control-sm" formControlName="department" readonly />
+          <div class="col-md-6 col-lg-3">
+            <label class="form-label small text-muted text-capitalize">Department</label>
+            <input class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" formControlName="department" readonly />
           </div>
 
-          <div class="col-md-3">
-  <label class="small text-dark">Date</label>
-  <input
-    type="date"
-    class="form-control form-control-sm"
-    formControlName="shiftDate"
-  />
-</div>
-
-
-          <div class="col-md-3">
-            <label class="small text-dark">Shift Type</label>
-            <input class="form-control form-control-sm" formControlName="shiftType" placeholder="e.g. Morning, Night" />
+          <div class="col-md-6 col-lg-3">
+            <label class="form-label small text-muted text-capitalize">Date</label>
+            <input type="date" class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" formControlName="shiftDate" />
           </div>
 
-          <div class="row mt-3 btn-lg px-4">
-  <div class="col text-end">
-    <button class="btn btn-sm btn-outline-primary" type="submit">Assign</button>
-  </div>
-</div>
+          <div class="col-md-6 col-lg-3">
+            <label class="form-label small text-muted text-capitalize">Shift Type</label>
+            <input class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" formControlName="shiftType" placeholder="e.g. Morning, Night" />
+          </div>
 
+          <div class="col-12 d-flex justify-content-end mt-3">
+            <button class="btn btn-sm btn-outline-primary rounded-pill shadow-sm fw-semibold px-4" type="submit">
+              Assign
+            </button>
+          </div>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Filter Dropdown -->
+  <!-- 🧭 Filter Dropdown -->
   <div class="mb-3">
-    <label class="form-label small text-dark">Filter by Department</label>
-    <select class="form-select form-select-sm w-25" [(ngModel)]="filterDepartment" (change)="applyFilter()">
+    <label class="form-label small text-dark fw-semibold">Filter by Department</label>
+    <select class="form-select form-select-sm w-25 rounded-2 border-primary-subtle shadow-sm" [(ngModel)]="filterDepartment" (change)="applyFilter()">
       <option value="">All</option>
       @for (d of departments; track d) {
         <option [value]="d">{{ d }}</option>
@@ -61,14 +69,16 @@
     </select>
   </div>
 
-  <!-- Shift Table -->
-  <div class="card shadow-sm border-0">
+  <!-- 📋 Shift Table -->
+  <div class="card border-0 shadow-lg my-4 rounded-3">
+    <div class="card-header bg-white border-bottom">
+      <h5 class="mb-0 text-dark fw-semibold text-center text-decoration-underline">Shifts</h5>
+    </div>
     <div class="card-body">
-      <h6 class="text-dark fw-semibold mb-3">Shifts</h6>
       <div class="table-responsive">
-        <table class="table table-hover table-sm align-middle">
+        <table class="table table-hover table-bordered table-striped table-sm align-middle text-center">
           <thead class="table-light">
-            <tr>
+            <tr class="align-middle text-nowrap">
               <th>Staff</th>
               <th>Department</th>
               <th>Date</th>
@@ -80,19 +90,27 @@
             @if (shiftsFiltered.length > 0) {
               @for (sh of shiftsFiltered; track sh.id) {
                 <tr>
-                  <td>{{ sh.staffName }}</td>
-                  <td>{{ sh.department }}</td>
-                  <td>{{ sh.shiftDate | date: 'mediumDate' }}</td>
-                  <td>{{ sh.shiftType }}</td>
+                  <td class="fw-semibold text-dark">{{ sh.staffName }}</td>
                   <td>
-                    <button class="btn btn-sm btn-outline-secondary me-1" (click)="editShift(sh)">Edit</button>
-                    <button class="btn btn-sm btn-outline-danger" (click)="deleteShift(sh.id)">Delete</button>
+                    <span class="badge bg-info-subtle text-dark rounded-2 px-2 py-1">{{ sh.department }}</span>
+                  </td>
+                  <td class="text-muted">{{ sh.shiftDate | date: 'mediumDate' }}</td>
+                  <td class="text-muted">{{ sh.shiftType }}</td>
+                  <td>
+                    <div class="d-flex justify-content-center gap-2">
+                      <button class="btn btn-sm btn-outline-primary shadow-sm border-1 fw-semibold" (click)="editShift(sh)">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger shadow-sm border-1 fw-semibold" (click)="deleteShift(sh.id)">
+                        <i class="bi bi-trash me-1"></i>Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               }
             } @else {
               <tr>
-                <td colspan="4" class="text-center text-muted">No shifts assigned yet</td>
+                <td colspan="5" class="text-center text-muted py-4">No shifts assigned yet</td>
               </tr>
             }
           </tbody>

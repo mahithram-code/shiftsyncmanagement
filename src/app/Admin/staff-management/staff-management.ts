@@ -4,17 +4,20 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'; 
 import { StaffService, Staff } from '../../ApiService/StaffService'; 
+import { RouterModule } from '@angular/router';
 // Observable import is no longer strictly necessary but can be kept
 
 @Component({
   selector: 'app-staff-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterModule],
   templateUrl: './staff-management.html'
 })
 export class StaffManagementComponent implements OnInit {
   staffs: Staff[] = []; 
   staffForm: FormGroup;
+  selectedStaffId: number | null = null;
+
   
   constructor(private fb: FormBuilder, private staffSvc: StaffService) {
     this.staffForm = this.fb.group({
@@ -42,37 +45,54 @@ export class StaffManagementComponent implements OnInit {
       }
     });
   }
+   
 
-  addStaff() {
-    if (this.staffForm.valid) {
-      // The form.value now correctly matches the AddStaffRequest payload
-      this.staffSvc.add(this.staffForm.value).subscribe({
+addStaff() {
+  if (this.staffForm.valid) {
+    const payload = this.staffForm.value;
+
+    if (this.selectedStaffId === null) {
+      // Add new staff
+      this.staffSvc.add(payload).subscribe({
         next: (newStaff) => {
           this.staffs.push(newStaff);
-          this.staffForm.reset({ securityRole: 'User' }); // Reset with default role
+          this.staffForm.reset({ securityRole: 'User' });
         },
         error: (err) => {
           console.error('Failed to add staff:', err.error);
           alert(err.error || 'Failed to add staff member.');
         }
       });
+    } else {
+      // Update existing staff
+      this.staffSvc.update(this.selectedStaffId, payload).subscribe({
+        next: (updatedStaff) => {
+          const index = this.staffs.findIndex(s => s.id === this.selectedStaffId);
+          if (index !== -1) this.staffs[index] = updatedStaff;
+          this.staffForm.reset({ securityRole: 'User' });
+          this.selectedStaffId = null;
+        },
+        error: (err) => {
+          console.error('Failed to update staff:', err.error);
+          alert(err.error || 'Failed to update staff member.');
+        }
+      });
     }
   }
+}
 
-  selectStaffForEdit(staff: Staff) {
-    console.log('Editing staff:', staff);
-    alert('Edit feature coming soon! Now patching form values.');
-    
-    this.staffForm.patchValue({
-      name: staff.name,
-      username: staff.username,
-      jobRole: staff.jobRole,
-      department: staff.department,
-      // FIX: securityRole re-added for patching
-      securityRole: staff.securityRole,
-      password: '' // Keep password blank when patching
-    });
-  }
+selectStaffForEdit(staff: Staff) {
+  this.selectedStaffId = staff.id;
+  this.staffForm.patchValue({
+    name: staff.name,
+    username: staff.username,
+    jobRole: staff.jobRole,
+    department: staff.department,
+    securityRole: staff.securityRole,
+    password: '' // Don't prefill password
+  });
+}
+
 
   delete(id: number) {
     this.staffSvc.delete(id).subscribe({

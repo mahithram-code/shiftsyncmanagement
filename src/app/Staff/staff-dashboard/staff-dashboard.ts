@@ -1,23 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { ShiftService } from '../../ApiService/ShiftService';
+import { shift } from '../../Models/Shift';
 
 @Component({
   selector: 'app-staff-dashboard',
   standalone: true,
-  imports:  [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './staff-dashboard.html'
 })
 export class StaffDashboardComponent implements OnInit {
-  staffName = 'Dr. Priya';
-  shifts = [
-    { day: 'Day 1', role: 'Doctor', shiftType: 'Day Shift' },
-    { day: 'Day 2', role: 'Doctor', shiftType: 'Night Shift' },
-    { day: 'Day 3', role: 'Doctor', shiftType: 'Day Shift' }
-  ];
+  staffName = '';
+  shifts: shift[] = [];
+
+  constructor(private shiftSvc: ShiftService, private router: Router) {}
 
   ngOnInit() {
-    // you can replace with API call later
+    this.shiftSvc.getMyShifts().subscribe({
+      next: (data) => {
+        this.shifts = data;
+        if (data.length > 0) {
+          this.staffName = data[0].staffName ?? '';
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load shifts:', err);
+      }
+    });
   }
-  
+
+  logout() {
+    localStorage.clear(); // or sessionStorage.clear() if you're using that
+    this.router.navigate(['/']); // Redirect to login or landing page
+  }
 }

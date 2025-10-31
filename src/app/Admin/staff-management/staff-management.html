@@ -1,61 +1,53 @@
-<div id="staff-management-page" class="container-fluid min-vh-100 d-flex flex-column py-4">
-  <h4 id="page-title" class="text-dark fw-bold mb-4 text-center">Staff Management</h4>
+<div id="staff-management-page" class="container-fluid min-vh-100 d-flex flex-column py-4 px-4 bg-light gap-3">
 
-  <div id="staff-form-card" class="card my-4 shadow-sm border-0">
+<div class="row align-items-center mb-3">
+  <div class="col-auto">
+    <a routerLink="/admin/dashboard" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold text-uppercase shadow-sm">
+      &larr; Back to Dashboard
+    </a>
+  </div>
+  <div class="col text-end">
+    <div class="d-flex justify-content-center mb-2">
+  <h4 id="page-title" class="text-dark fw-bold mb-0 text-uppercase text-decoration-underline">
+    Staff Management
+  </h4>
+</div>
+
+
+  </div>
+</div>
+
+
+  <div id="staff-form-card" class="card my-4 shadow-lg border border-primary-subtle border-opacity-25 rounded-3">
     <div class="card-header bg-white border-bottom">
-      <h5 class="mb-0 text-dark fw-semibold text-center">Add New Staff</h5>
+      <h5 class="mb-0 text-dark fw-semibold text-center text-decoration-underline">Add New Staff</h5>
     </div>
     <div class="card-body">
       <form id="staff-form" [formGroup]="staffForm" (ngSubmit)="addStaff()">
-        <div class="row g-4">
+        <div class="row g-4 gy-3">
           <div class="col-md-6 col-lg-3">
-            <label for="staff-name" class="form-label small text-muted">Name</label>
-            <input
-              id="staff-name"
-              class="form-control form-control-sm"
-              placeholder="Enter name"
-              formControlName="name"
-            />
+            <label for="staff-name" class="form-label small text-muted text-capitalize">Name</label>
+            <input id="staff-name" class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" placeholder="Enter name" formControlName="name" />
           </div>
 
           <div class="col-md-6 col-lg-3">
-            <label for="staff-username" class="form-label small text-muted">Username</label>
-            <input
-              id="staff-username"
-              class="form-control form-control-sm"
-              placeholder="Enter username"
-              formControlName="username"
-            />
+            <label for="staff-username" class="form-label small text-muted text-capitalize">Username</label>
+            <input id="staff-username" class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" placeholder="Enter username" formControlName="username" />
           </div>
 
-          <div class="col-md-6 col-lg-3">
-            <label for="staff-password" class="form-label small text-muted">Password</label>
-            <input
-              id="staff-password"
-              type="password"
-              class="form-control form-control-sm"
-              placeholder="Set password"
-              formControlName="password"
-            />
+          <div class="col-md-6 col-lg-2">
+            <label for="staff-password" class="form-label small text-muted text-capitalize">Password</label>
+            <input id="staff-password" type="password" class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" placeholder="Set password" formControlName="password" />
           </div>
 
-          <div class="col-md-6 col-lg-3">
-            <label for="staff-jobrole" class="form-label small text-muted">Job Role</label>
-            <input
-              id="staff-jobrole"
-              class="form-control form-control-sm"
-              placeholder="e.g. Doctor, Nurse"
-              formControlName="jobRole"
-            />
+          <div class="col-md-6 col-lg-2">
+            <label for="staff-jobrole" class="form-label small text-muted text-capitalize">Job Role</label>
+            <input id="staff-jobrole" class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" placeholder="e.g. Doctor, Nurse" formControlName="jobRole" />
           </div>
 
-          <div class="col-md-6 col-lg-3">
-            <label for="staff-department" class="form-label small text-muted">Department</label>
-            <select
-              id="staff-department"
-              class="form-select form-select-sm"
-              formControlName="department"
-            >
+          <div class="col-md-6 col-lg-2">
+            <label for="staff-department" class="form-label small text-muted text-capitalize">Department</label>
+            <select id="staff-department" class="form-select form-select-sm rounded-2 border-primary-subtle shadow-sm" formControlName="department">
               <option value="">-- Select Department --</option>
               <option value="Emergency">Emergency</option>
               <option value="ICU">ICU</option>
@@ -64,13 +56,8 @@
             </select>
           </div>
 
-          <div class="col-md-6 col-lg-6 d-flex align-items-end">
-            <button
-              id="add-staff-button"
-              class="btn btn-primary btn-sm w-100"
-              type="submit"
-              [disabled]="staffForm.invalid"
-            >
+          <div class="col-md-6 col-lg-3 d-flex justify-content-end">
+            <button id="add-staff-button" class="btn btn-primary btn-sm w-100 rounded-pill shadow-sm fw-semibold" type="submit" [disabled]="staffForm.invalid">
               Add Staff
             </button>
           </div>
@@ -79,19 +66,22 @@
     </div>
   </div>
 
-  <div id="staff-list-card" class="card border-0 shadow-sm my-4">
+  <div id="staff-list-card" class="card border-0 shadow-lg my-4 rounded-3">
     <div class="card-header bg-white border-bottom">
-      <h5 id="staff-list-title" class="mb-0 text-dark fw-semibold text-center">Staff List</h5>
+      <h5 id="staff-list-title" class="mb-0 text-dark fw-semibold text-center text-decoration-underline">Staff List</h5>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <table id="staff-table" class="table table-hover table-bordered table-sm align-middle text-center">
+        <table id="staff-table" class="table table-hover table-bordered table-striped table-sm align-middle text-center">
           <thead class="table-light">
-            <tr class="align-middle">
+            <tr class="align-middle text-nowrap">
               <th style="width: 10%">Id</th>
               <th style="width: 20%">Name</th>
-              <th style="width: 20%">Username</th> <th style="width: 15%">Job Role</th> <th style="width: 15%">Department</th>
-              <th style="width: 10%">Role</th> <th style="width: 10%">Actions</th>
+              <th style="width: 20%">Username</th>
+              <th style="width: 15%">Job Role</th>
+              <th style="width: 15%">Department</th>
+              <th style="width: 10%">Role</th>
+              <th style="width: 10%">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -100,18 +90,19 @@
                 <tr>
                   <td class="fw-bold text-muted">{{ s.id }}</td>
                   <td class="fw-semibold text-dark">{{ s.name }}</td>
-                  <td class="text-muted">{{ s.username }}</td> <td class="text-muted">{{ s.jobRole }}</td>
+                  <td class="text-muted">{{ s.username }}</td>
+                  <td class="text-muted">{{ s.jobRole }}</td>
                   <td>
-                    <span class="badge bg-secondary-subtle text-dark px-2 py-1">{{ s.department }}</span>
+                    <span class="badge bg-info-subtle text-dark rounded-2 px-2 py-1">{{ s.department }}</span>
                   </td>
                   <td class="text-muted">{{ s.securityRole }}</td>
                   <td>
                     <div class="d-flex justify-content-center gap-2">
-                      <button class="btn btn-sm btn-outline-primary" (click)="selectStaffForEdit(s)">
-                        Edit
+                      <button class="btn btn-sm btn-outline-primary shadow-sm border-1 fw-semibold" (click)="selectStaffForEdit(s)">
+                        <i class="bi bi-pencil me-1"></i>Edit
                       </button>
-                      <button class="btn btn-sm btn-outline-danger" (click)="delete(s.id)">
-                        <i class="bi bi-trash"></i> Delete
+                      <button class="btn btn-sm btn-outline-danger shadow-sm border-1 fw-semibold" (click)="delete(s.id)">
+                        <i class="bi bi-trash me-1"></i>Delete
                       </button>
                     </div>
                   </td>

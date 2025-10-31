@@ -1,36 +1,52 @@
-<div class="container-fluid min-vh-100 py-5 bg-white text-dark">
-  <h4 class="text-center fw-bold mb-4">👤 Edit Profile</h4>
-
-  <div class="card shadow-sm border-0 mx-auto" style="max-width: 600px;">
-    <div class="card-body">
-      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="row g-3">
-        <div class="col-12">
-          <label class="form-label">Name</label>
-          <input type="text" class="form-control" formControlName="name" />
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-gradient bg-primary-subtle">
+  <div class="card shadow-lg border-0 rounded-4" style="max-width: 500px; width: 100%;">
+    <div class="card-body px-5 py-5">
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+        <!-- Header -->
+        <div class="text-center mb-4">
+          <h4 class="fw-bold text-dark">Edit Profile</h4>
+          <p class="text-muted small">Update your personal information below</p>
         </div>
 
-        <div class="col-12">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-control" formControlName="email" />
+        
+
+        <!-- Full Name -->
+        <div class="mb-3">
+          <label for="name" class="form-label text-dark fw-semibold">Full Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            class="form-control form-control-lg rounded-3"
+            placeholder="e.g. Dr. Priya"
+          />
         </div>
 
-        <div class="col-12">
-          <label class="form-label">Department</label>
-          <select class="form-select" formControlName="department">
-            <option value="Emergency">Emergency</option>
-            <option value="ICU">ICU</option>
-            <option value="General">General</option>
-            <option value="OPD">OPD</option>
-          </select>
+        <!-- Username -->
+        <div class="mb-3">
+          <label for="username" class="form-label text-dark fw-semibold">Username</label>
+          <input
+            id="username"
+            type="text"
+            formControlName="username"
+            class="form-control form-control-lg rounded-3"
+            placeholder="e.g. priya@example.com"
+          />
         </div>
 
-        <div class="col-12">
-          <label class="form-label">Phone</label>
-          <input type="text" class="form-control" formControlName="phone" placeholder="10-digit number" />
+        <!-- Submit Button -->
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-dark btn-lg rounded-pill d-flex align-items-center justify-content-center gap-2" [disabled]="profileForm.invalid">
+            <span>Update Profile</span>
+            <i class="fas fa-user-edit"></i>
+          </button>
         </div>
 
-        <div class="col-12 text-center mt-3">
-          <button type="submit" class="btn btn-dark px-4">Update Profile</button>
+        <!-- Back Link -->
+        <div class="text-center mt-3">
+          <a routerLink="staff/profile" class="btn btn-sm btn-outline-secondary rounded-pill fw-semibold shadow-sm">
+            &larr; Back to Dashboard
+          </a>
         </div>
       </form>
     </div>

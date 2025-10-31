@@ -8,11 +8,12 @@ import { TimetableService } from '../../Services/Timetable.service';
 // FIX: Removed the old, incorrect staff model
 // import { staff } from '../../Models/Staff'; 
 import { shift } from '../../Models/Shift';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-timetable',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule], 
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule], 
   templateUrl: './time-table.html' 
 })
 export class TimetableComponent implements OnInit {
