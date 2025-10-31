@@ -4,4 +4,5 @@ export interface staff
     name: string;
     username:string;
     department:string;
+    jobRole: string;
 }

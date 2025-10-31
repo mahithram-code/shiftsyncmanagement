@@ -34,7 +34,8 @@ export class TimetableComponent implements OnInit {
     this.shiftForm = this.fb.group({
       staffId: ['', Validators.required],
       department: [{ value: '', disabled: true }],
-      shiftType: ['Day', Validators.required],
+      shiftType: [0, Validators.required], // 0 = Day, 1 = Night
+
       shiftDate: ['', Validators.required]
     });
   }
@@ -57,10 +58,11 @@ export class TimetableComponent implements OnInit {
 
   loadShifts() {
     // FIX: Add explicit type (shift[]) to 's' to resolve TS7006
-    this.ttSvc.getAll().subscribe((s: shift[]) => {
-      this.shifts = s;
-      this.applyFilter();
-    });
+   this.ttSvc.getAll().subscribe((s: shift[]) => {
+  this.shifts = s;
+  this.applyFilter();
+});
+
   }
 
   applyFilter() {
@@ -69,31 +71,45 @@ export class TimetableComponent implements OnInit {
       : [...this.shifts];
   }
 
-  assignShift() {
-    const raw = this.shiftForm.getRawValue();
-    const payload: any = {
-      staffId: Number(raw.staffId),
-      department: raw.department,
-      shiftType: raw.shiftType,
-      shiftDate: raw.shiftDate
-    };
+ assignShift() {
+  const raw = this.shiftForm.getRawValue();
 
-    this.ttSvc.create(payload).subscribe({
-      next: () => {
-        this.loadShifts();
-        this.shiftForm.patchValue({ shiftType: 'Day', shiftDate: '' });
-      },
-      // FIX: Add explicit type 'any' to 'err' to resolve TS7006
-      error: (err: any) => alert(err?.error?.message ?? 'Shift assignment failed')
-    });
-  }
+  const payload = {
+    staffId: Number(raw.staffId),
+    shiftDate: raw.shiftDate,
+    shiftType: raw.shiftType // ✅ Enum string
+  };
 
-  editShift(s: shift) { 
-    const newType = prompt('Edit shift type (Day / Night)', s.shiftType);
-    if (newType) {
-      this.ttSvc.update({ ...s, shiftType: newType }).subscribe(() => this.loadShifts());
+  console.log('Sending payload:', payload);
+
+  this.ttSvc.create(payload).subscribe({
+    next: () => {
+      this.loadShifts();
+      this.shiftForm.patchValue({ shiftType: 0, shiftDate: '' });
+    },
+    error: (err: any) => {
+      console.error('Assign failed:', err);
+      alert(err?.error ?? 'Shift assignment failed');
+    }
+  });
+}
+
+
+
+
+editShift(s: shift) { 
+    const newType = prompt('Edit shift type (0 = Day, 1 = Night)', String(s.shiftType));
+
+    // Use an 'else if' or just a single 'if' to avoid running twice
+    if (newType === '0' || newType === '1') {
+      this.ttSvc.update({ ...s, shiftType: Number(newType) }).subscribe(() => this.loadShifts());
+    } else if (newType) {
+      // Handle if they typed something invalid, or just do nothing
+      alert('Invalid shift type. Please enter 0 or 1.');
     }
   }
+
+    
 
   deleteShift(id: number) {
     if (!confirm('Delete this shift?')) return;

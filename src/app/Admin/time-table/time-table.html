@@ -45,7 +45,11 @@
 
           <div class="col-md-6 col-lg-3">
             <label class="form-label small text-muted text-capitalize">Shift Type</label>
-            <input class="form-control form-control-sm rounded-2 border-primary-subtle shadow-sm" formControlName="shiftType" placeholder="e.g. Morning, Night" />
+            <select class="form-select" formControlName="shiftType">
+  <option [value]="0">Day</option>
+  <option [value]="1">Night</option>
+</select>
+
           </div>
 
           <div class="col-12 d-flex justify-content-end mt-3">
@@ -95,7 +99,8 @@
                     <span class="badge bg-info-subtle text-dark rounded-2 px-2 py-1">{{ sh.department }}</span>
                   </td>
                   <td class="text-muted">{{ sh.shiftDate | date: 'mediumDate' }}</td>
-                  <td class="text-muted">{{ sh.shiftType }}</td>
+                  <td>{{ sh.shiftType === '0' ? 'Day' : 'Night' }}</td>
+
                   <td>
                     <div class="d-flex justify-content-center gap-2">
                       <button class="btn btn-sm btn-outline-primary shadow-sm border-1 fw-semibold" (click)="editShift(sh)">
