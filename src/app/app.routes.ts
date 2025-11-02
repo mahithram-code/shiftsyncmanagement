@@ -11,13 +11,38 @@ export const routes: Routes = [
   // Public area
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'staff/staff-dashboard', component: StaffDashboardComponent },
-  { path: 'staff/profile', component: StaffProfileComponent },
-  // Admin area
-  { path: 'admin/dashboard', component: AdminDashboardComponent },
-  { path: 'admin/staff-management', component: StaffManagementComponent },
-  { path: 'admin/timetable', component: TimetableComponent },
+
+  // Staff area (needs login)
+  { 
+    path: 'staff/staff-dashboard', 
+    component: StaffDashboardComponent, 
+    
+  },
+  { 
+    path: 'staff/profile', 
+    component: StaffProfileComponent, 
+    
+  },
+
+  // Admin area (needs login + admin role)
+  { 
+    path: 'admin/dashboard', 
+    component: AdminDashboardComponent, 
+    
+  },
+  { 
+    path: 'admin/staff-management', 
+    component: StaffManagementComponent, 
+    
+  },
+  { 
+    path: 'admin/timetable', 
+    component: TimetableComponent, 
+    
+  },
 
   // Fallback route
   { path: '**', redirectTo: '' }
 ];
+
+// canActivate: [AuthGuard] 

@@ -18,10 +18,9 @@ export class ProfileService {
 
 
 
-  updateProfile(request: Profile): Observable<any> {
-  const token = localStorage.getItem('token');
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  return this.http.put('/api/profile', request, { headers });
+  updateProfile(data: Profile): Observable<any> {
+  return this.http.put('https://localhost:7216/api/Profile', data);
 }
+
 
 }

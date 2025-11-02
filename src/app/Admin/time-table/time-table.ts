@@ -1,118 +1,194 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms'; 
-// FIX: Import the correct StaffService and Staff model from ApiService
-import { StaffService, Staff } from '../../ApiService/StaffService';
-// FIX: Corrected import path for TimetableService
-import { TimetableService } from '../../Services/Timetable.service';
-// FIX: Removed the old, incorrect staff model
-// import { staff } from '../../Models/Staff'; 
-import { shift } from '../../Models/Shift';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { StaffService, Staff } from '../../ApiService/StaffService';
+import { TimetableService } from '../../ApiService/Timetable.service';
+import { shift } from '../../Models/Shift';
 
 @Component({
   selector: 'app-timetable',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule], 
-  templateUrl: './time-table.html' 
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  templateUrl: './time-table.html'
 })
-export class TimetableComponent implements OnInit {
-  shiftForm!: FormGroup; 
-
-  // FIX: Use the correct Staff interface (imported from ApiService)
-  staffs: Staff[] = []; 
+export class TimetableComponent implements OnInit, AfterViewInit {
+  shiftForm!: FormGroup;
+  editShiftForm!: FormGroup;
+  staffs: Staff[] = [];
   shifts: shift[] = [];
   shiftsFiltered: shift[] = [];
-  departments = ['Emergency', 'ICU', 'General', 'OPD'];
+  departments = ['Emergency', 'ICU', 'General', 'OPD', 'Support', 'Clinical', 'Cardiology'];
   filterDepartment = '';
+  conflictMessage: string = '';
+
+  @ViewChild('editShiftModal') editModalElement!: ElementRef;
+  editModal: any;
+  shiftToEdit: shift | null = null;
+
+  // 🔍 Pop card state
+  selectedStaffName: string = '';
+  selectedDate: Date = new Date('2025-11-02');
 
   constructor(
     private fb: FormBuilder,
-    private staffSvc: StaffService, // This is now the correct StaffService
+    private staffSvc: StaffService,
     private ttSvc: TimetableService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.shiftForm = this.fb.group({
       staffId: ['', Validators.required],
       department: [{ value: '', disabled: true }],
-      shiftType: [0, Validators.required], // 0 = Day, 1 = Night
-
-      shiftDate: ['', Validators.required]
+      shiftDate: ['', Validators.required],
+      shiftType: [0, Validators.required]
     });
-  }
 
-  ngOnInit() {
+    this.editShiftForm = this.fb.group({
+      shiftType: [0, Validators.required]
+    });
+
     this.loadStaffs();
     this.loadShifts();
 
     this.shiftForm.get('staffId')?.valueChanges.subscribe((idString: string | null) => {
-      const id = Number(idString); 
-      const s = this.staffs.find(x => x.id === id); 
-      this.shiftForm.patchValue({ department: s?.department ?? '' });
+      const id = Number(idString);
+      const staff = this.staffs.find(x => x.id === id);
+      this.shiftForm.patchValue({ department: staff?.department ?? '' });
     });
   }
 
-  loadStaffs() {
-    // FIX: Add explicit type (Staff[]) to 's' to resolve TS7006
-    this.staffSvc.getAll().subscribe((s: Staff[]) => this.staffs = s);
+  ngAfterViewInit(): void {
+    if (this.editModalElement) {
+      this.editModal = new (window as any).bootstrap.Modal(this.editModalElement.nativeElement);
+    }
   }
 
-  loadShifts() {
-    // FIX: Add explicit type (shift[]) to 's' to resolve TS7006
-   this.ttSvc.getAll().subscribe((s: shift[]) => {
-  this.shifts = s;
-  this.applyFilter();
-});
-
+  loadStaffs(): void {
+    this.staffSvc.getAll().subscribe((s: Staff[]) => {
+      this.staffs = s;
+    });
   }
 
-  applyFilter() {
+  loadShifts(): void {
+    this.ttSvc.getAll().subscribe((sh: shift[]) => {
+      console.log('Loaded shifts:', sh);
+      this.shifts = sh;
+      this.applyFilter();
+    });
+  }
+
+  applyFilter(): void {
     this.shiftsFiltered = this.filterDepartment
       ? this.shifts.filter(x => x.department === this.filterDepartment)
       : [...this.shifts];
   }
 
- assignShift() {
-  const raw = this.shiftForm.getRawValue();
+  assignShift(): void {
+    const raw = this.shiftForm.getRawValue();
+    const formattedDate = this.formatDate(raw.shiftDate);
 
-  const payload = {
-    staffId: Number(raw.staffId),
-    shiftDate: raw.shiftDate,
-    shiftType: raw.shiftType // ✅ Enum string
-  };
+    const shiftTypeToNumber = (type: string): number => type === 'Day' ? 0 : 1;
 
-  console.log('Sending payload:', payload);
+    const alreadyAssigned = this.shifts.some(s =>
+      s.staffId === Number(raw.staffId) &&
+      s.shiftDate === formattedDate &&
+      shiftTypeToNumber(s.shiftType) === Number(raw.shiftType)
+    );
 
-  this.ttSvc.create(payload).subscribe({
-    next: () => {
-      this.loadShifts();
-      this.shiftForm.patchValue({ shiftType: 0, shiftDate: '' });
-    },
-    error: (err: any) => {
-      console.error('Assign failed:', err);
-      alert(err?.error ?? 'Shift assignment failed');
+    if (alreadyAssigned) {
+      const staff = this.staffs.find(s => s.id === Number(raw.staffId));
+      this.conflictMessage = `Staff member ${staff?.name} (No. ${staff?.id}) already has a shift assigned on ${formattedDate}.`;
+      return;
     }
-  });
-}
 
+    const payload = {
+      staffId: Number(raw.staffId),
+      shiftDate: formattedDate,
+      shiftType: Number(raw.shiftType)
+    };
 
+    console.log('Assigning shift with payload:', payload);
 
+    this.ttSvc.create(payload).subscribe({
+      next: () => {
+        this.loadShifts();
+        this.shiftForm.reset({ shiftType: 0 });
+      },
+      error: (err) => {
+        console.error('Error assigning shift:', err);
+        this.conflictMessage = err.error || 'Failed to assign shift. Please check the form and try again.';
+      }
+    });
+  }
 
-editShift(s: shift) { 
-    const newType = prompt('Edit shift type (0 = Day, 1 = Night)', String(s.shiftType));
+  formatDate(date: string | Date): string {
+    const d = new Date(date);
+    return d.toISOString().split('T')[0];
+  }
 
-    // Use an 'else if' or just a single 'if' to avoid running twice
-    if (newType === '0' || newType === '1') {
-      this.ttSvc.update({ ...s, shiftType: Number(newType) }).subscribe(() => this.loadShifts());
-    } else if (newType) {
-      // Handle if they typed something invalid, or just do nothing
-      alert('Invalid shift type. Please enter 0 or 1.');
+  editShift(s: shift): void {
+    this.shiftToEdit = s;
+    this.editShiftForm.patchValue({
+      shiftType: s.shiftType === 'Day' ? 0 : 1
+    });
+
+    if (this.editModal) {
+      this.editModal.show();
     }
   }
 
-    
+  onUpdateShift(): void {
+    if (!this.shiftToEdit || !this.editShiftForm.valid) return;
 
-  deleteShift(id: number) {
+    const formValue = this.editShiftForm.value;
+
+    const updatedShift = {
+      ...this.shiftToEdit,
+      shiftType: Number(formValue.shiftType)
+    };
+
+    this.ttSvc.update(updatedShift).subscribe({
+      next: () => {
+        this.loadShifts();
+        this.editModal.hide();
+        this.shiftToEdit = null;
+      },
+      error: (err) => {
+        console.error('Error updating shift:', err);
+        alert(err.error || 'Failed to update shift.');
+      }
+    });
+  }
+
+  deleteShift(id: number): void {
     if (!confirm('Delete this shift?')) return;
     this.ttSvc.delete(id).subscribe(() => this.loadShifts());
+  }
+
+  // 🔍 Pop card logic
+  showStaffShifts(name: string): void {
+    console.log('Clicked:', name);
+    this.selectedStaffName = name;
+    this.selectedDate = new Date('2025-11-02'); // default start date
+  }
+
+  get selectedShift(): shift | null {
+    return this.shifts.find(s =>
+      s.staffName === this.selectedStaffName &&
+      this.formatDate(s.shiftDate) === this.formatDate(this.selectedDate)
+    ) ?? null;
+  }
+
+  nextDay(): void {
+    this.selectedDate = new Date(this.selectedDate.getTime() + 86400000);
+  }
+
+  prevDay(): void {
+    this.selectedDate = new Date(this.selectedDate.getTime() - 86400000);
+  }
+
+  closePopCard(): void {
+    this.selectedStaffName = '';
   }
 }

@@ -18,13 +18,10 @@ export class StaffProfileComponent implements OnInit {
   constructor(private fb: FormBuilder, private profileSvc: ProfileService) {
     this.profileForm = this.fb.group({
   name: ['', Validators.required],
-  username: ['', [Validators.required, Validators.email]],
-  jobRole: ['', Validators.required],
+  username: ['', [Validators.required]],
   currentPassword: ['', Validators.required],
   newPassword: ['', Validators.required]
-}, {
-  validators: this.passwordMatchValidator
-});
+}, );
 
   }
 
@@ -34,7 +31,7 @@ export class StaffProfileComponent implements OnInit {
         this.profileForm.patchValue({
           name: data.name,
           username: data.username,
-          jobRole: data.jobRole
+          
         });
       },
       error: (err) => {
@@ -49,16 +46,18 @@ export class StaffProfileComponent implements OnInit {
     console.warn('Form is invalid:', this.profileForm.errors);
     console.table(this.profileForm.value); // ✅ See what values are missing
     Object.keys(this.profileForm.controls).forEach(key => {
-      const control = this.profileForm.get(key);
-      console.log(`${key} → valid: ${control?.valid}, value: ${control?.value}`);
-    });
+  const control = this.profileForm.get(key);
+  console.log(`${key}: valid=${control?.valid}, errors=`, control?.errors);
+});
+
+
     return;
   }
 
   const request: Profile = {
     name: this.profileForm.value.name,
     username: this.profileForm.value.username,
-    jobRole: this.profileForm.value.jobRole,
+    
     currentPassword: this.profileForm.value.currentPassword,
     newPassword: this.profileForm.value.newPassword
   };
@@ -79,12 +78,5 @@ export class StaffProfileComponent implements OnInit {
     }
   });
 }
-
-
-  private passwordMatchValidator(group: AbstractControl): { [key: string]: boolean } | null {
-    const currentPassword = group.get('currentPassword')?.value;
-    const newPassword = group.get('newPassword')?.value;
-    return currentPassword === newPassword ? null : { mismatch: true };
-  }
-
 }
+  

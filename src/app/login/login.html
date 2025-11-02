@@ -16,7 +16,9 @@
             formControlName="username"
             class="form-control form-control-lg"
             placeholder="Enter your username"
+            [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
           />
+          <div class="invalid-feedback">Username is required</div>
         </div>
 
         <!-- Password -->
@@ -28,24 +30,18 @@
             formControlName="password"
             class="form-control form-control-lg"
             placeholder="Enter your password"
+            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
           />
+          <div class="invalid-feedback">Password is required</div>
         </div>
 
         <!-- Remember Me -->
-        <div class="form-check mb-4">
-          <input
-            type="checkbox"
-            id="rememberMe"
-            formControlName="rememberMe"
-            class="form-check-input"
-          />
-          <label for="rememberMe" class="form-check-label text-dark">Remember me</label>
-        </div>
+
 
         <!-- Submit Button -->
         <div class="d-grid">
           <button type="submit" class="btn btn-dark btn-lg rounded-pill d-flex align-items-center justify-content-center gap-2">
-            <span>Sign In</span>
+            <span>Login In</span>
             <i class="fas fa-sign-in-alt"></i>
           </button>
         </div>
