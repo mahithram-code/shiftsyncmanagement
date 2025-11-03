@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router'; // ✅ Import Router here
+import { RouterModule, Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -9,7 +9,7 @@ import { RouterModule, Router } from '@angular/router'; // ✅ Import Router her
   templateUrl: './admin-dashboard.html'
 })
 export class AdminDashboardComponent {
-  constructor(private router: Router) {} // ✅ Now Angular knows what Router is
+  constructor(private router: Router) {} 
 
   logout() {
     localStorage.clear(); // or sessionStorage.clear()

@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { StaffService, Staff } from '../../ApiService/StaffService';
 import { TimetableService } from '../../ApiService/Timetable.service';
 import { shift } from '../../Models/Shift';
+import { Toast } from 'bootstrap';
 
 @Component({
   selector: 'app-timetable',
@@ -22,11 +23,13 @@ export class TimetableComponent implements OnInit, AfterViewInit {
   filterDepartment = '';
   conflictMessage: string = '';
 
+  toastMessage: string = '';
+  @ViewChild('shiftToast', { static: false }) shiftToast!: ElementRef;
+
   @ViewChild('editShiftModal') editModalElement!: ElementRef;
   editModal: any;
   shiftToEdit: shift | null = null;
 
-  // 🔍 Pop card state
   selectedStaffName: string = '';
   selectedDate: Date = new Date('2025-11-02');
 
@@ -72,7 +75,6 @@ export class TimetableComponent implements OnInit, AfterViewInit {
 
   loadShifts(): void {
     this.ttSvc.getAll().subscribe((sh: shift[]) => {
-      console.log('Loaded shifts:', sh);
       this.shifts = sh;
       this.applyFilter();
     });
@@ -108,18 +110,26 @@ export class TimetableComponent implements OnInit, AfterViewInit {
       shiftType: Number(raw.shiftType)
     };
 
-    console.log('Assigning shift with payload:', payload);
-
     this.ttSvc.create(payload).subscribe({
       next: () => {
         this.loadShifts();
         this.shiftForm.reset({ shiftType: 0 });
+
+        const staff = this.staffs.find(s => s.id === payload.staffId);
+        const shiftLabel = payload.shiftType === 0 ? 'Day Shift' : 'Night Shift';
+        this.showToast(`${staff?.name} is assigned ${shiftLabel} on ${payload.shiftDate}`);
       },
       error: (err) => {
         console.error('Error assigning shift:', err);
         this.conflictMessage = err.error || 'Failed to assign shift. Please check the form and try again.';
       }
     });
+  }
+
+  showToast(message: string) {
+    this.toastMessage = message;
+    const toast = new Toast(this.shiftToast.nativeElement);
+    toast.show();
   }
 
   formatDate(date: string | Date): string {
@@ -166,11 +176,9 @@ export class TimetableComponent implements OnInit, AfterViewInit {
     this.ttSvc.delete(id).subscribe(() => this.loadShifts());
   }
 
-  // 🔍 Pop card logic
   showStaffShifts(name: string): void {
-    console.log('Clicked:', name);
     this.selectedStaffName = name;
-    this.selectedDate = new Date('2025-11-02'); // default start date
+    this.selectedDate = new Date('2025-11-02');
   }
 
   get selectedShift(): shift | null {

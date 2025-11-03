@@ -3,7 +3,7 @@
 <!-- Title Row -->
 <div class="row mb-0">
   <div class="col text-center">
-    <h4 class="text-dark fw-bold mb-0 text-uppercase text-decoration-underline">Timetable</h4>
+    <h4 class="text-dark fw-bold mb-0 text-uppercase text-decoration-underline">Staff Management</h4>
   </div>
 </div>
 
@@ -26,6 +26,30 @@
       <button class="btn btn-outline-danger mt-4 rounded-pill px-4 fw-semibold" (click)="conflictMessage = ''">Close</button>
     </div>
   }
+
+  <!-- ✅ Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3 z-3">
+  <div
+    class="toast align-items-center text-bg-success border-0 shadow-sm"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+    #shiftToast
+  >
+    <div class="d-flex">
+      <div class="toast-body fw-semibold">
+        {{ toastMessage }}
+      </div>
+      <button
+        type="button"
+        class="btn-close btn-close-white me-2 m-auto"
+        data-bs-dismiss="toast"
+        aria-label="Close"
+      ></button>
+    </div>
+  </div>
+</div>
+
 
   <!-- Add Shift Form -->
   <div id="staff-form-card" class="card my-4 shadow-lg border border-primary-subtle border-opacity-25 rounded-3">
